@@ -13,10 +13,16 @@ import {
   LaunchType,
   Clipboard,
   closeMainWindow,
+  getPreferenceValues,
 } from "@raycast/api";
 import { useEffect, useState } from "react";
 
 /* ----------------------------- Types ----------------------------- */
+
+interface Preferences {
+  autoClearOnDrop: boolean;
+  closeWindowOnDrop: boolean;
+}
 
 type StackItem =
   | {
@@ -40,6 +46,7 @@ const STORAGE_KEY = "stashit-stack";
 export default function ShowStackCommand() {
   const [items, setItems] = useState<StackItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const preferences = getPreferenceValues<Preferences>();
 
   useEffect(() => {
     loadStack();
@@ -114,6 +121,11 @@ export default function ShowStackCommand() {
 
   async function dropStack() {
     await launchCommand({ name: "copy-stack-to-clipboard", type: LaunchType.UserInitiated });
+    
+    // If auto-clear is enabled, reload the stack after a short delay
+    if (preferences.autoClearOnDrop) {
+      setTimeout(() => loadStack(), 100);
+    }
   }
 
   async function dropSingleItem(item: StackItem) {
@@ -142,12 +154,26 @@ export default function ShowStackCommand() {
       }
 
       await Clipboard.copy({ file: path });
-      await showToast({
-        style: Toast.Style.Success,
-        title: "File ready to paste",
-        message: "Press ⌘V anywhere",
-      });
-      await closeMainWindow();
+      
+      // Remove this item from stack if auto-clear is enabled
+      if (preferences.autoClearOnDrop) {
+        await saveStack(items.filter((i) => i.id !== item.id));
+        await showToast({
+          style: Toast.Style.Success,
+          title: "File dropped & removed",
+          message: "Press ⌘V anywhere",
+        });
+      } else {
+        await showToast({
+          style: Toast.Style.Success,
+          title: "File ready to paste",
+          message: "Press ⌘V anywhere",
+        });
+      }
+      
+      if (preferences.closeWindowOnDrop) {
+        await closeMainWindow();
+      }
     } catch (error) {
       await showToast({
         style: Toast.Style.Failure,
@@ -229,11 +255,6 @@ export default function ShowStackCommand() {
                     <Action.CopyToClipboard
                       title="Copy File Path"
                       content={item.path}
-                    />
-                    <Action
-                      title="Drop to Folder"
-                      icon={Icon.Download}
-                      onAction={() => launchCommand({ name: "drop-stack", type: LaunchType.UserInitiated })}
                     />
                   </>
                 ) : (

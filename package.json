@@ -35,12 +35,38 @@
     "mode": "no-view"
   },
   {
-    "name": "drop-stack",
-    "title": "Drop Stack to Folder",
-    "description": "Drop all items from stack to a selected Finder folder",
+    "name": "clear-stack",
+    "title": "Clear Stack",
+    "description": "Clear all items from the stack",
+    "mode": "no-view"
+  },
+  {
+    "name": "test-preferences",
+    "title": "Test Preferences",
+    "description": "Test the preferences",
     "mode": "no-view"
   }
 ],
+  "preferences": [
+    {
+      "name": "autoClearOnDrop",
+      "type": "checkbox",
+      "required": false,
+      "title": "Auto-clear Stack",
+      "label": "Automatically clear stack after dropping",
+      "description": "When enabled, the stack will be automatically cleared after using 'Drop All Stack'",
+      "default": false
+    },
+    {
+      "name": "closeWindowOnDrop",
+      "type": "checkbox",
+      "required": false,
+      "title": "Close Window on Drop",
+      "label": "Automatically close Raycast window after dropping",
+      "description": "When enabled, Raycast will close automatically after dropping files",
+      "default": true
+    }
+  ],
   "dependencies": {
     "@raycast/api": "^1.104.1",
     "@raycast/utils": "^1.17.0"
