@@ -16,13 +16,31 @@
   ],
   "license": "MIT",
   "commands": [
-    {
-      "name": "add-to-stack",
-      "title": "Add to Stack",
-      "description": "Add the selected item to stack",
-      "mode": "view"
-    }
-  ],
+  {
+    "name": "add-to-stack",
+    "title": "Add to Stack",
+    "description": "Add selected Finder files or clipboard items to stack (Dropover-style)",
+    "mode": "no-view"
+  },
+  {
+    "name": "show-stack",
+    "title": "Show Stack",
+    "description": "View and manage stashed items",
+    "mode": "view"
+  }, 
+  {
+    "name": "copy-stack-to-clipboard",
+    "title": "Drop Stack",
+    "description": "Copy all files to clipboard - paste anywhere with ⌘V (Dropover-style)",
+    "mode": "no-view"
+  },
+  {
+    "name": "drop-stack",
+    "title": "Drop Stack to Folder",
+    "description": "Drop all items from stack to a selected Finder folder",
+    "mode": "no-view"
+  }
+],
   "dependencies": {
     "@raycast/api": "^1.104.1",
     "@raycast/utils": "^1.17.0"
